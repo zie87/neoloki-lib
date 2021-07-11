@@ -23,4 +23,5 @@ add_library(lokineo INTERFACE)
 target_include_directories(lokineo INTERFACE include)
 add_library(lokineo::loki ALIAS lokineo)
 
+enable_testing()
 add_subdirectory(tests)

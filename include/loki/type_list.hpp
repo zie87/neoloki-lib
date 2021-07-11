@@ -348,10 +348,10 @@ struct derived_to_front<type_list<Head, Tail...>> {
 private:
     using the_most_derived = typename most_derived<type_list<Tail...>, Head>::type;
     using temp             = typename replace<type_list<Tail...>, the_most_derived, Head>::type;
-    using l                = typename derived_to_front<temp>::type;
+    using new_tail         = typename derived_to_front<temp>::type;
 
 public:
-    using type = typename append<type_list<the_most_derived>, l>::type;
+    using type = typename append<type_list<the_most_derived>, new_tail>::type;
 };
 
 }  // namespace loki
