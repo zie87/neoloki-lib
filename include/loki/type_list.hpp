@@ -9,14 +9,14 @@
 namespace loki {
 
 template <typename... TYPES>
-struct type_list {};
+struct type_list;
 
 //////////////////////////////////////////////////////////////////////////////////////////
 //
 /////////////////////////////////////////////////////////////////////////////////////////
 
-template <typename... TYPES>
-struct size {};
+template <class TList>
+struct size;
 
 template <typename... TYPES>
 struct size<type_list<TYPES...>> {
@@ -38,7 +38,9 @@ struct type_at<type_list<Head, Tail...>, 0> {
 };
 
 template <typename Head, typename... Tail, std::size_t Idx>
-struct type_at<type_list<Head, Tail...>, Idx> : type_at<type_list<Tail...>, Idx - 1> {};
+struct type_at<type_list<Head, Tail...>, Idx> {
+    using type = typename type_at<type_list<Tail...>, Idx - 1>::type;
+};
 
 //////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -54,8 +56,9 @@ struct type_at_non_strict<type_list<Head, Tail...>, 0, DefaultType> {
 };
 
 template <typename Head, typename... Tail, std::size_t Idx, typename DefaultType>
-struct type_at_non_strict<type_list<Head, Tail...>, Idx, DefaultType>
-    : type_at_non_strict<type_list<Tail...>, Idx - 1, DefaultType> {};
+struct type_at_non_strict<type_list<Head, Tail...>, Idx, DefaultType> {
+    using type = typename type_at_non_strict<type_list<Tail...>, Idx - 1, DefaultType>::type;
+};
 
 //////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -85,52 +88,18 @@ public:
 //////////////////////////////////////////////////////////////////////////////////////////
 //
 /////////////////////////////////////////////////////////////////////////////////////////
-template <class TList, typename T>
+
+template <typename... Args>
 struct append;
 
-template <>
-struct append<type_list<>, type_list<>> {
-    using type = type_list<>;
+template <typename... Args, typename T>
+struct append<type_list<Args...>, T> {
+    using type = type_list<Args..., T>;
 };
 
-template <typename T>
-struct append<type_list<>, T> {
-    using type = type_list<T>;
-};
-
-template <typename T>
-struct append<type_list<>, type_list<T>> {
-    using type = type_list<T>;
-};
-
-template <typename T>
-struct append<type_list<T>, type_list<>> {
-    using type = typename append<type_list<>, T>::type;
-};
-
-template <typename T, typename U>
-struct append<type_list<T>, U> {
-    using type = type_list<T, U>;
-};
-
-template <typename T, typename U>
-struct append<type_list<T>, type_list<U>> {
-    using type = type_list<T, U>;
-};
-
-template <typename... T, typename U>
-struct append<type_list<T...>, U> {
-    using type = type_list<T..., U>;
-};
-
-template <typename T, typename... U>
-struct append<type_list<T>, type_list<U...>> {
-    using type = type_list<T, U...>;
-};
-
-template <typename... T, typename... U>
-struct append<type_list<T...>, type_list<U...>> {
-    using type = type_list<T..., U...>;
+template <typename... Args1, typename... Args2>
+struct append<type_list<Args1...>, type_list<Args2...>> {
+    using type = type_list<Args1..., Args2...>;
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -219,6 +188,7 @@ private:
 public:
     using type = typename append<type_list<Head>, l2>::type;
 };
+
 //////////////////////////////////////////////////////////////////////////////////////////
 //
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -235,9 +205,9 @@ struct replace<type_list<T>, T, U> {
     using type = type_list<U>;
 };
 
-template <typename T, typename U, typename V>
-struct replace<type_list<T>, U, V> {
-    using type = type_list<T>;
+template <typename Head, typename T, typename U>
+struct replace<type_list<Head>, T, U> {
+    using type = type_list<Head>;
 };
 
 template <typename Head, typename... Tail, typename T>
@@ -249,6 +219,7 @@ template <typename Head, typename... Tail, typename T, typename U>
 struct replace<type_list<Head, Tail...>, T, U> {
     using type = typename append<type_list<Head>, typename replace<type_list<Tail...>, T, U>::type>::type;
 };
+
 //////////////////////////////////////////////////////////////////////////////////////////
 //
 /////////////////////////////////////////////////////////////////////////////////////////
