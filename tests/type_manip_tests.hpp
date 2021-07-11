@@ -11,8 +11,8 @@ struct type_manip_test : test {
     type_manip_test() : test("type_manip.hpp") {}
 
     virtual void execute(test_result& results) override {
-        test::assert("integer to type", (loki::integer_to_type<2>::value == 2), results);
-        test::assert("type to type", (loki::is_same<loki::type_to_type<char>::type, char>::result), results);
+        test::assertion("integer to type", (loki::integer_to_type<2>::value == 2), results);
+        test::assertion("type to type", (loki::is_same<loki::type_to_type<char>::type, char>::result), results);
 
         {
             auto r = loki::conversion<char, int>::exists && loki::conversion<char, int>::exists_both_ways &&
@@ -27,13 +27,13 @@ struct type_manip_test : test {
             r &= loki::conversion<derived2*, base*>::exists && loki::conversion<derived1*, base*>::exists &&
                  !loki::conversion<base*, derived2*>::exists && !loki::conversion<base*, derived1*>::exists &&
                  loki::conversion<base*, void*>::exists && !loki::conversion<void*, base*>::exists;
-            test::assert("conversion", r, results);
+            test::assertion("conversion", r, results);
         }
 
         {
             constexpr auto r = loki::is_same<loki::select<true, char, int>::type, char>::result &&
                                loki::is_same<loki::select<false, char, int>::type, int>::result;
-            test::assert("select", r, results);
+            test::assertion("select", r, results);
         }
 
         {
@@ -41,7 +41,7 @@ struct type_manip_test : test {
                                is_super_subclass<base, base>::result && !is_super_subclass<derived1, base>::result &&
                                !is_super_subclass<derived2, base>::result && !is_super_subclass<void, base>::result;
 
-            test::assert("super subclass", r, results);
+            test::assertion("super subclass", r, results);
         }
 
         {
@@ -50,7 +50,7 @@ struct type_manip_test : test {
                 !is_super_subclass_strict<base, base>::result && !is_super_subclass_strict<derived1, base>::result &&
                 !is_super_subclass_strict<derived2, base>::result && !is_super_subclass_strict<void, base>::result;
 
-            test::assert("super subclass strict", r, results);
+            test::assertion("super subclass strict", r, results);
         }
     }
 

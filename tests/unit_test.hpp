@@ -59,8 +59,8 @@ protected:
         }
     }
 
-    void assert(const std::string& s, bool assertion, test_result& results, bool supported = true,
-                const std::string& failstr = "") {
+    void assertion(const std::string& s, bool asserts, test_result& results, bool supported = true,
+                   const std::string& failstr = "") {
         constexpr std::size_t offset = 63U;
 
         auto str = std::string(results.positon + 2, ' ') + s;
@@ -72,7 +72,7 @@ protected:
             return;
         }
 
-        if (!assertion) {
+        if (!asserts) {
             std::cout << str << "failed" << ((!failstr.empty()) ? " - " + failstr : "") << '\n';
             ++results.failed;
             return;
