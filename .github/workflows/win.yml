@@ -1,0 +1,58 @@
+name: windows
+
+on:
+  push:
+    branches-ignore:
+      - 'docker'
+  schedule:
+    - cron: '0 4 * * 0' # Weekly on Sundays at 04:00
+
+jobs:       
+  build:
+    runs-on: windows-latest
+
+    strategy:
+      matrix:
+        build_type: [Debug, Release]
+
+    steps:
+    - name: checkout
+      uses: actions/checkout@v2
+      with:
+        submodules: false
+        fetch-depth: 0
+
+    - name: init
+      id: init
+      shell: bash
+      run: |
+        # rebuild the deps when the build environment changes
+        # if env.lock changes then the cache will be invalidated
+        echo "${{ runner.os }}" > env.lock
+          
+        # run vcvarsall and save the environment to env.sh:
+        .github/tools/win/vs_env.bat x64
+        source env.sh
+        cl >> env.lock 2>&1
+
+        cmake --version >> env.lock 2>&1
+        echo "==== env.lock ===="
+        cat env.lock
+
+    - name: configure
+      shell: bash
+      run: |
+        source env.sh
+        cmake -S . -B build -G "Visual Studio 16 2019" -DCMAKE_BUILD_TYPE=${{ matrix.config }}
+
+    - name: build
+      shell: bash
+      run: |
+        cmake --build build --config ${{ matrix.build_type }}
+    
+    - name: tests
+      shell: bash
+      run: |
+        cd build
+        ctest ${{ matrix.build_type }} --rerun-failed --output-on-failure
+        cd ..

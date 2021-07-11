@@ -19,9 +19,15 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
 endif()
 
 
-add_library(lokineo INTERFACE)
-target_include_directories(lokineo INTERFACE include)
-add_library(lokineo::loki ALIAS lokineo)
+add_library(neoloki_options INTERFACE)
+include(Sanitizers)
+enable_sanitizers(neoloki_options)
+add_library(neoloki::options ALIAS neoloki_options)
+
+add_library(neoloki INTERFACE)
+target_include_directories(neoloki INTERFACE include)
+target_link_libraries(neoloki INTERFACE neoloki::options)
+add_library(neoloki::loki ALIAS neoloki)
 
 enable_testing()
 add_subdirectory(tests)
