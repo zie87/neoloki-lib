@@ -24,9 +24,10 @@ include(Sanitizers)
 enable_sanitizers(neoloki_options)
 add_library(neoloki::options ALIAS neoloki_options)
 
-add_library(neoloki INTERFACE)
-target_include_directories(neoloki INTERFACE include)
-target_link_libraries(neoloki INTERFACE neoloki::options)
+add_library(neoloki STATIC)
+target_sources(neoloki PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src/singleton.cpp)
+target_include_directories(neoloki PUBLIC include)
+target_link_libraries(neoloki PRIVATE neoloki::options)
 add_library(neoloki::loki ALIAS neoloki)
 
 enable_testing()
