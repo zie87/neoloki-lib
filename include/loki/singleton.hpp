@@ -2,10 +2,10 @@
 #define NEOLOKI_SINGLETON_HPP
 
 #include <algorithm>
+#include <cassert>
 #include <cstddef>
 #include <cstdint>
 #include <cstdlib>
-#include <cassert>
 #include <stdexcept>
 
 #include "threads.hpp"
@@ -15,7 +15,7 @@ namespace loki {
 namespace detail {
 class lifetime_tracker {
 public:
-    lifetime_tracker(std::size_t longevity) : m_longevity(longevity) {}
+    explicit lifetime_tracker(std::size_t longevity) : m_longevity(longevity) {}
     virtual ~lifetime_tracker() = default;
 
     static bool compare(const lifetime_tracker* lhs, const lifetime_tracker* rhs) noexcept {
@@ -170,7 +170,6 @@ private:
     static void make_instance();
     static void destroy_singleton();
 
-    // Protection
     singleton_holder();
 
     using instance_ptr_type = typename ThreadingModel<T*>::volatile_type;
