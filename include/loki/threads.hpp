@@ -1,6 +1,10 @@
 #ifndef NEOLOKI_THREADS_HPP
 #define NEOLOKI_THREADS_HPP
 
+#ifndef LOKI_DEFAULT_THREADING
+#define LOKI_DEFAULT_THREADING ::loki::single_threaded
+#endif
+
 namespace loki {
 
 template <class Host>

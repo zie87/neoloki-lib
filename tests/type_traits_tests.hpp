@@ -86,7 +86,7 @@ struct type_traits_test : test {
             test::assertion("arithmetic (std)", r, results);
         }
         {
-            constexpr auto r = loki::type_traits<char>::is_arithmetic && loki::type_traits<char>::is_arithmetic &&
+            constexpr auto r = loki::type_traits<bool>::is_arithmetic && loki::type_traits<char>::is_arithmetic &&
                                loki::type_traits<double>::is_arithmetic && !loki::type_traits<void>::is_arithmetic;
             test::assertion("arithmetic", r, results);
         }
