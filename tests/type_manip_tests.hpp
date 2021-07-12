@@ -55,15 +55,9 @@ struct type_manip_test : test {
     }
 
 private:
-    struct base {
-        char c;
-    };
-    struct derived1 : base {
-        char c;
-    };
-    struct derived2 : derived1 {
-        char c;
-    };
+    struct base {};
+    struct derived1 : base {};
+    struct derived2 : derived1 {};
 } type_manip_test_instance;
 
 }  // namespace loki
